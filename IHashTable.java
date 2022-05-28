@@ -22,28 +22,29 @@ public interface IHashTable {
 	 * @return the table entry with the required key if exists, or null otherwise.
 	 */
 	public HashTableElement Find(long key);
-	
+
 	public class TableIsFullException extends Exception{
 		public HashTableElement hte;
-		
-		public TableIsFullException(HashTableElement hte) {	
+
+		public TableIsFullException(HashTableElement hte) {
 			this.hte=hte;
 		}
 	}
-	
+
 	public class KeyAlreadyExistsException extends Exception{
 		public HashTableElement hte;
-		
+
 		public KeyAlreadyExistsException(HashTableElement hte) {
 			this.hte=hte;
 		}
 	}
-	
+
 	public class KeyDoesntExistException extends Exception{
 		public long key;
-		
+
 		public KeyDoesntExistException(long key) {
 			this.key=key;
 		}
 	}
 }
+
