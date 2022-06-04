@@ -21,6 +21,6 @@ public class ModHash {
 	}
 	
 	public int Hash(long key) {
-		return (int) ((int) ((this.a*key + this.b)%this.p)%this.m);
+		return (int) ( ((this.a*key + this.b)%this.p)%this.m);
 	}
 }

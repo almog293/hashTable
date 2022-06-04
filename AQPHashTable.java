@@ -13,7 +13,11 @@ public class AQPHashTable extends OAHashTable {
 			return (this.func.Hash(x) + i*i)%this.size;
 		}
 		else{
-			return (Math.abs(this.func.Hash(x) - (i*i)))%this.size;
+			int num = (this.func.Hash(x) - (i*i))%this.size;
+			if(num < 0){
+				num += this.size;
+			}
+			return num;
 		}
 	}
 }

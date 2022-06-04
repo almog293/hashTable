@@ -1,167 +1,136 @@
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
 public class Test {
-    private static class HashIsI extends OAHashTable {
-        public HashIsI(int m) {
-            super(m);
-        }
-        
-        @Override
-        public int Hash(long x, int i) {
-            return i;
-        }
-    }
-
-    private static class RealHashTable implements IHashTable {
-        private int m;
-        private HashMap<Long, HashTableElement> real;
-
-        public RealHashTable(int m, long p) {
-            real = new HashMap<Long, HashTableElement>();
-            this.m = m;
-        }
-
-        public void Insert(HashTableElement hte) throws TableIsFullException, KeyAlreadyExistsException {
-            if (real.get(hte.GetKey()) != null)
-                throw new KeyAlreadyExistsException(hte);
-
-            real.put(hte.GetKey(), hte);
-            if (real.size() > m) throw new TableIsFullException(hte);
-        }
-
-        public void Delete(long key) throws KeyDoesntExistException {
-            if (real.get(key) == null)
-                throw new KeyDoesntExistException(key);
-
-            real.remove(key);
-        }
-
-        public HashTableElement Find(long key) {
-            return real.get(key);
-        }
-    }
-
-    private static void testFillup() {
-        System.out.println("test: fillup");
-        IHashTable ht = new HashIsI(3);
-        try {
-            ht.Insert(new HashTableElement(2, 1));
-            ht.Insert(new HashTableElement(6, 2));
-            ht.Insert(new HashTableElement(3, 3));
-        } catch (Exception e) {
-            System.out.println("FAILED: " + e + " during 3 first insertions");
-            return;
-        }
-
-        try {
-            ht.Insert(new HashTableElement(4, 3));
-            System.out.println("FAILED: No exception during in third insertion");
-            return;
-        } catch (IHashTable.TableIsFullException e) {
-            return;
-        } catch (Exception e) {
-            System.out.println("FAILED: " + e + " during last insertion");
-            return;
-        }
-    }
-
-    private static List<IHashTable> allHashTables(int m, long p) {
-        ArrayList<IHashTable> result = new ArrayList<IHashTable>();
-        result.add(new HashIsI(m));
-        result.add(new LPHashTable(m, p));
-        result.add(new QPHashTable(m, p));
-        result.add(new AQPHashTable(m, p));
-        result.add(new DoubleHashTable(m, p));
-        return result;
-    }
-
-    private static boolean testRandomStress(IHashTable ht) {
-
-        boolean VERBOSE = false;  // LOOK AT ME LOOK AT ME LOOK AT ME, THIS IS USEFUL
-        // ^^^^^^^^^^ //
-        // ^^^^^^^^^^ //
-
-        Random rng = new Random();
-        RealHashTable rht = new RealHashTable(15, 97);
-
-        for (int i = 0; i < 2000; i++) {
-            // choose random operation
-            int randomOperation = rng.nextInt(3);  // insert delete or find
-            long key = rng.nextInt(20);
-
-            if (randomOperation == 0) {
-                if (VERBOSE) System.out.println("insert " + key);
-                // insert
-                HashTableElement hte = new HashTableElement(key, 1 + rng.nextInt(10000));
-                String e1 = "", e2 = "";
-                boolean full = false;
-                try {
-                    ht.Insert(hte);
-                } catch (IHashTable.TableIsFullException e) {
-                    full = true;
-                } catch (Exception e) {
-                    e1 = e.getClass().getName();
-                }
-                if (!full) {
-                    // don't insert if not full so as to have a consistent state
-                    try {
-                        rht.Insert(hte);
-                    } catch (Exception e) {
-                        e2 = e.getClass().getName();
-                    }
-                }
-                if (e1 != e2) { System.out.println("FAILED: insert, e1 != e2: " + e1 + ", " + e2); return false; }
-            } else if (randomOperation == 1) {
-                if (VERBOSE) System.out.println("         delete " + key);
-                // delete
-                String e1 = "", e2 = "";
-                try {
-                    ht.Delete(key);
-                } catch (Exception e) {
-                    e1 = e.getClass().getName();
-                }
-                try {
-                    rht.Delete(key);
-                } catch (Exception e) {
-                    e2 = e.getClass().getName();
-                }
-                if (e1 != e2) { System.out.println("FAILED: delete, e1 != e2: " + e1 + ", " + e2); return false; }
-            } else if (randomOperation == 2) {
-                if (VERBOSE) System.out.println("                  find " + key);
-                // find
-                HashTableElement v1 = null, v2 = null;
-                String e1 = "", e2 = "";
-                try {
-                    v1 = ht.Find(key);
-                } catch (Exception e) {
-                    e1 = e.getClass().getName();
-                }
-                try {
-                    v2 = rht.Find(key);
-                } catch (Exception e) {
-                    e2 = e.getClass().getName();
-                }
-                if (e1 != e2) { System.out.println("FAILED: find, e1 != e2: " + e1 + ", " + e2); return false; }
-                if (v2 != null && (v1.GetKey() != v2.GetKey() || v1.GetValue() != v2.GetValue())) { System.out.println("FAILED: find, v1 != v2"); return false; }
-            }
-        }
-        return true;
-    }
 
     public static void main(String[] args) {
-        testFillup();
-        System.out.println("test: random stress");
-        for (int i = 0; i < 100; i++) {
-            List<IHashTable> hashTables = allHashTables(15, 97);
-            for (IHashTable ht : hashTables) {
-                if (!testRandomStress(ht)) {
-                    System.out.println("in test case " + ht.getClass().getName());
-                    break;
+        Q3();
+    }
+    public static void Qq1(){
+        HashSet<Integer> hs = new HashSet<Integer>();
+        int i = 0;
+        int q = 6571;
+        while ( i < q){
+            int num = (((int) Math.pow(-1 , i)) * (i*i))%q;
+            hs.add(num);
+            i++;
+        }
+        System.out.println(hs.size());
+    }
+    public static void Q1(){
+        int fullCounterAQ = 0;
+        int existCounterAQ = 0;
+        int fullCounterQP = 0;
+        int existCounterQP = 0;
+        for(int k = 0; k < 100; k++){
+            QPHashTable qp = new QPHashTable(6571 , 10000019);
+            AQPHashTable ap = new AQPHashTable(6571 , 10000019);
+            Random random = new Random();
+            for (int i = 0 ; i < 6571; i++){
+                int b = random.nextInt(100);
+                long a = 100*i + b;
+                HashTableElement ht = new HashTableElement(a, a);
+                try {
+                    qp.Insert(ht);
+                }
+                catch (IHashTable.TableIsFullException | IHashTable.KeyAlreadyExistsException e){
+                    if(e instanceof IHashTable.KeyAlreadyExistsException){
+                        existCounterQP++;
+                    }
+                    else{
+                        fullCounterQP++;
+                    }
+                }
+                try{
+                    ap.Insert(ht);
+                }
+                catch (IHashTable.TableIsFullException | IHashTable.KeyAlreadyExistsException e){
+                    if(e instanceof IHashTable.KeyAlreadyExistsException){
+                        existCounterAQ++;
+                    }
+                    else{
+                        fullCounterAQ++;
+                    }
+                }
+
+            }
+
+        }
+        System.out.println("Question1:" + "\n" + "QPHashTable:" + "\n" + "Full Exeption:" + fullCounterQP + " Exist Exeption:" + existCounterQP);
+        System.out.println("AQHashTable:" + "\n" + "Full Exeption:" + fullCounterAQ + " Exist Exeption:" + existCounterAQ);
+    }
+    public static void Q2(){
+        OAHashTable[] tables = new OAHashTable[4];
+        int m = 10000019;
+        int p = 1000000007;
+        LPHashTable lp = new LPHashTable(m , p);
+        QPHashTable qp = new QPHashTable(m , p);
+        AQPHashTable ap = new AQPHashTable(m , p);
+        DoubleHashTable dp = new DoubleHashTable(m , p);
+        tables[0] = lp; tables[1] = qp; tables[2]  = ap; tables[3] = dp;
+        int n = m/2;
+        long[] number = new long[n];
+        Random random = new Random();
+        for(int i = 0; i < n; i++){
+            int b = random.nextInt(100);
+            long a = 100*i + b;
+            number[i]= a;
+        }
+        for(OAHashTable table : tables){
+            long start = System.currentTimeMillis();
+            int counter = 0;
+            for(int i = 0; i < n; i++){
+                try{
+                    table.Insert(new HashTableElement(number[i] , number[i]));
+                }
+                catch (IHashTable.TableIsFullException | IHashTable.KeyAlreadyExistsException e){
+                    counter++;
+                }
+
+            }
+            long end = System.currentTimeMillis();
+            System.out.println(table.getClass() + ":" + "\n" + "Running Time:" + (end-start) + " Exception:" + counter);
+        }
+
+    }
+    public static void Q3(){
+        int m = 10000019;
+        int p = 1000000007;
+        DoubleHashTable dp = new DoubleHashTable(m,p);
+        int n = m/2;
+
+
+
+        for(int k = 0 ; k < 6; k++){
+            int existCounter = 0;
+            int fullCounter = 0;
+            int dontExistCounter = 0;
+            int[] number = new int[n];
+            Random random = new Random();
+            for(int i = 0; i < n; i++){
+                number[i] = random.nextInt(100);;
+            }
+            long start = System.currentTimeMillis();
+            for(int i = 0; i < n; i++){
+                HashTableElement ht = new HashTableElement(100 *i + number[i] , i);
+                try{
+                    dp.Insert(ht);
+                } catch (IHashTable.TableIsFullException e) {
+                    fullCounter++;
+                } catch (IHashTable.KeyAlreadyExistsException e) {
+                    existCounter++;
                 }
             }
+            for(int i = 0; i < n; i++){
+                try {
+                    dp.Delete( 100 *i + number[i]);
+                } catch (IHashTable.KeyDoesntExistException e) {
+                    dontExistCounter++;
+                }
+
+            }
+            long end = System.currentTimeMillis();
+            System.out.println("i:" + k + " Time:" + (end-start));
+            System.out.println("Full counter:" + fullCounter + " exist counter = " + existCounter + " not exist counter:" + dontExistCounter);
         }
     }
 }
